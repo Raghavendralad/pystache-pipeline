@@ -10,8 +10,8 @@ node {
 	}
 	
 	stage('Build') { 
-	        def workspace = pwd()
-                sh 'cd ${workspace}; cd ../pystache; chmod 755 *; ./run_tests_with_coverage.sh' 
+	        
+                sh 'chmod 755 *; ./run_tests_with_coverage.sh' 
         }
 
 }
