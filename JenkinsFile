@@ -36,5 +36,10 @@ node {
 	stage('Code Coverage Check') { 
                 sh './run_code_coverage_test.sh' 
 		step([$class: 'CloverPublisher', cloverReportFileName: 'clover.xml'])
+		if (currentBuild.result == 'UNSTABLE')
+		{
+                         currentBuild.result = 'FAILURE'
+                         throw err
+		}
         }
 }
