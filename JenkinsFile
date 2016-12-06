@@ -6,6 +6,7 @@ node {
 
 		git( credentialsId: '2fcdd7d9-9e62-4f1d-ab17-8f320e5f25ac'
 			, url: 'git://github.com/thiyaguelmails/pystache.git' 
+			, branch: 'master'
 		);
 	}
 	
