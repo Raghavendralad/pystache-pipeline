@@ -13,6 +13,11 @@ node {
 	        
                 sh 'chmod 755 *; ./run_junit_test.sh' 
 		step([$class: 'JUnitResultArchiver', testResults: 'python_tests_xml/*'])
+		if (currentBuild.result == 'UNSTABLE')
+		{
+                         currentBuild.result = 'FAILURE'
+                         throw err
+		}
         }
 
 }
