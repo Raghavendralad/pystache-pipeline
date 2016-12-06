@@ -45,7 +45,7 @@ node {
 	
 	stage('Build Package') { 
 	        
-                sh 'python setup.py dist' 		
+                sh 'python setup.py sdist' 		
 		if (currentBuild.result == 'UNSTABLE')
 		{
                          currentBuild.result = 'FAILURE'
