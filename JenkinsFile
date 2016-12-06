@@ -36,7 +36,14 @@ node {
 	stage('Code Coverage Check') { 
                 sh './run_code_coverage_test.sh' 
 
-		step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage.xml'])
+		publishHTML (target: [
+      allowMissing: false,
+      alwaysLinkToLastBuild: false,
+      keepAll: true,
+      reportDir: 'coverage',
+      reportFiles: 'index.html',
+      reportName: "Copertura Code Coverage Report"
+    ])
 
 		if (currentBuild.result == 'UNSTABLE')
 		{
