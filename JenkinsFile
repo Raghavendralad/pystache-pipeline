@@ -10,7 +10,7 @@ node {
 		);
 	}
 	
-	stage('JUnit Test') { 
+	stage('JUnit Testcase Execution') { 
 	        
                 sh 'chmod 755 *; ./run_junit_test.sh' 
 		step([$class: 'JUnitResultArchiver', testResults: 'python_tests_xml/*'])
@@ -26,6 +26,17 @@ node {
                 sh './run_code_quality_test.sh' 
 		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pep8', pattern: 'pep8.log' ]], unstableTotalAll: '200', usePreviousBuildAsReference: true ])
 		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pylint', pattern: 'pyflakes.log' ]], unstableTotalAll: '200', usePreviousBuildAsReference: true ])
+		if (currentBuild.result == 'UNSTABLE')
+		{
+                         currentBuild.result = 'FAILURE'
+                         throw err
+		}
+        }
+	
+	stage('Code Coverage Check') { 
+	        
+                sh './run_code_coverage_test.sh' 
+		step([$class: 'hudson.plugins.cobertura.CoberturaPublisher', coberturaReportFile: 'coverage.xml', failNoReports: true, sourceEncoding: 'ASCII' ])
 		if (currentBuild.result == 'UNSTABLE')
 		{
                          currentBuild.result = 'FAILURE'
