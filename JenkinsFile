@@ -20,4 +20,15 @@ node {
 		}
         }
 
+	stage('Code Quality Check') { 
+	        
+                sh './run_code_quality_test.sh' 
+		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pep8', pattern: 'pep8.log' ]], unstableTotalAll: '100', usePreviousBuildAsReference: true ])
+		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pylint', pattern: 'pyflakes.log' ]], unstableTotalAll: '100', usePreviousBuildAsReference: true ])
+		if (currentBuild.result == 'UNSTABLE')
+		{
+                         currentBuild.result = 'FAILURE'
+                         throw err
+		}
+        }
 }
