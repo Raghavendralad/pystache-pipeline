@@ -13,7 +13,7 @@ node {
 	stage('JUnit Testcase Execution') { 
 	        
                 sh 'chmod 755 *; ./run_junit_test.sh' 
-		step([$class: 'JUnitResultArchiver', testResults: 'python_tests_xml/*'])
+		step([$class: 'JUnitResultArchiver', testDataPublishers: [[$class: 'StabilityTestDataPublisher']], testResults: 'python_tests_xml/*'])
 		if (currentBuild.result == 'UNSTABLE')
 		{
                          currentBuild.result = 'FAILURE'
