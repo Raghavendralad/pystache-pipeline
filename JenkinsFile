@@ -1,53 +1,40 @@
-node { 
-    
-	stage( 'Checkout Project' ) {
-	
+node {     
+	stage( 'Checkout Project' ) { 	
 		def workspace = pwd()
 		echo( "Workspace = ${workspace}" );
 		git( credentialsId: '2fcdd7d9-9e62-4f1d-ab17-8f320e5f25ac'
 			, url: 'git://github.com/thiyaguelmails/pystache.git' 
 			, branch: 'master'
 		);
-	}
-	
-	stage('JUnit Testcase Execution') { 
-	        
+	}	
+	stage('JUnit Testcase Execution') { 	        
                 sh 'chmod 755 *; ./run_junit_test.sh' 
 		step([$class: 'JUnitResultArchiver', testResults: 'python_tests_xml/*'])
-		if (currentBuild.result == 'UNSTABLE')
-		{
+		if (currentBuild.result == 'UNSTABLE')  {
                          currentBuild.result = 'FAILURE'
                          throw err
 		}
         }
-
-	stage('Code Quality Check') { 
-	        
+	stage('Code Quality Check') { 	        
                 sh './run_code_quality_test.sh' 
 		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pep8', pattern: 'pep8.log' ]], unstableTotalAll: '200', usePreviousBuildAsReference: true ])
 		step([$class: 'WarningsPublisher', parserConfigurations: [[ parserName: 'pylint', pattern: 'pyflakes.log' ]], unstableTotalAll: '200', usePreviousBuildAsReference: true ])
-		if (currentBuild.result == 'UNSTABLE')
-		{
+		if (currentBuild.result == 'UNSTABLE')	{
                          currentBuild.result = 'FAILURE'
                          throw err
 		}
-        }
-	
+        }	
 	stage('Code Coverage Check') { 
                 sh './run_code_coverage_test.sh' 
 		publishHTML ( target: [ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'coverage', reportFiles: 'index.html', reportName: "Copertura Code Coverage Report" ] )
-		if (currentBuild.result == 'UNSTABLE')
-		{
+		if (currentBuild.result == 'UNSTABLE')	{
                          currentBuild.result = 'FAILURE'
                          throw err
 		}
-        }
-	
-	stage('Build Package') { 
-	        
+        }	
+	stage('Build Package') { 	        
                 sh 'python setup.py sdist' 		
-		if (currentBuild.result == 'UNSTABLE')
-		{
+		if (currentBuild.result == 'UNSTABLE')	{
                          currentBuild.result = 'FAILURE'
                          throw err
 		}
