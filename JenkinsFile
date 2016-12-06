@@ -1,9 +1,9 @@
 node { 
     
 	stage( 'Checkout Project' ) {
+	
 		def workspace = pwd()
-		echo( "\u2600 workspace=${workspace}" );
-
+		echo( "Workspace = ${workspace}" );
 		git( credentialsId: '2fcdd7d9-9e62-4f1d-ab17-8f320e5f25ac'
 			, url: 'git://github.com/thiyaguelmails/pystache.git' 
 			, branch: 'master'
@@ -35,16 +35,17 @@ node {
 	
 	stage('Code Coverage Check') { 
                 sh './run_code_coverage_test.sh' 
-
-		publishHTML (target: [
-      allowMissing: false,
-      alwaysLinkToLastBuild: false,
-      keepAll: true,
-      reportDir: 'coverage',
-      reportFiles: 'index.html',
-      reportName: "Copertura Code Coverage Report"
-    ])
-
+		publishHTML ( target: [ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'coverage', reportFiles: 'index.html', reportName: "Copertura Code Coverage Report" ] )
+		if (currentBuild.result == 'UNSTABLE')
+		{
+                         currentBuild.result = 'FAILURE'
+                         throw err
+		}
+        }
+	
+	stage('Build Package') { 
+	        
+                sh 'python setup.py dist' 		
 		if (currentBuild.result == 'UNSTABLE')
 		{
                          currentBuild.result = 'FAILURE'
