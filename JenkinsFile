@@ -35,6 +35,6 @@ node {
 	
 	stage('Code Coverage Check') { 
                 sh './run_code_coverage_test.sh' 
-		step([$class: 'CloverPublisher', cloverReportDir: 'reports', cloverReportFileName: 'clover.xml'])
+		step([$class: 'CloverPublisher', cloverReportFileName: 'clover.xml'])
         }
 }
