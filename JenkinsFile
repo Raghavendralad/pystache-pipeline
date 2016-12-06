@@ -34,13 +34,6 @@ node {
         }
 	
 	stage('Code Coverage Check') { 
-	        
                 sh './run_code_coverage_test.sh' 
-		step([$class: 'hudson.plugins.cobertura.CoberturaPublisher', coberturaReportFile: 'coverage.xml', failNoReports: true, sourceEncoding: 'ASCII' ])
-		if (currentBuild.result == 'UNSTABLE')
-		{
-                         currentBuild.result = 'FAILURE'
-                         throw err
-		}
         }
 }
